@@ -1,10 +1,10 @@
 import sys
-from .. import fetch_current_channels
 from .abstract import AbstractCommand
+from ..models import Channel
 
 
 class ListCommand(AbstractCommand):
     def run(self, out=sys.stdout, err=sys.stderr):
-        for channel in fetch_current_channels():
+        for channel in Channel.fetch_current():
             out.write(channel.channel_id + ' :\n')
             out.write('\t' + channel.title + '\n')

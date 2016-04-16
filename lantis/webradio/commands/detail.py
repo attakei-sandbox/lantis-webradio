@@ -1,5 +1,6 @@
 import sys
-from .. import Channel, ChannelNotFound
+from .. import ChannelNotFound
+from ..models import Channel
 from .abstract import AbstractCommand
 
 
