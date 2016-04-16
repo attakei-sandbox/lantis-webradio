@@ -12,10 +12,10 @@ class ChannelNotFound(Exception):
 
 
 class Channel(object):
-    def __init__(self, site_url, title, latest_episode_url):
+    def __init__(self, site_url, title, last_episode_url):
         self.title = title
         self.site_url = site_url
-        self.latest_episode_url = latest_episode_url
+        self.last_episode_url = last_episode_url
         self.channel_id = site_url.replace(URL_BASE, '')[:-1]
 
     def __repr__(self):

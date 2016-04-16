@@ -15,4 +15,11 @@ class DetailCommand(AbstractCommand):
         except ChannelNotFound:
             err.write('Channel "{}" is not found.\n'.format(channnel_key))
             return
-        out.write('Hello! I am "{}"\n'.format(channel.title))
+        self.out_detail_information(channel, out)
+
+    def out_detail_information(self, channel, out):
+        description = 'Descriontion:\n' \
+            '    Title:       {title}\n' \
+            '    Site:        {site_url}\n' \
+            '    LastEpisode: {last_episode_url}\n'
+        out.write(description.format(**channel.__dict__))
