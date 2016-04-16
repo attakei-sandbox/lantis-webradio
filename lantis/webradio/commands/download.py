@@ -26,4 +26,4 @@ class DownloadCommand(AbstractCommand):
         except ChannelNotFound as ex:
             err.write(str(ex) + '\n')
             return 1
-        print(episode)
+        episode.download('/var/lib/lantis/tmp')

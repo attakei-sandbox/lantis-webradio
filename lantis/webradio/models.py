@@ -1,3 +1,4 @@
+import os
 import re
 from . import INDEX_URL, URL_BASE, utils, ChannelNotFound
 
@@ -73,3 +74,35 @@ class Episode(object):
     @classmethod
     def parse_url(cls, url):
         return re.search(cls.REGEX_QT, url).groupdict()
+
+    def download(self, save_dir):
+        from urllib.request import urlopen, Request
+        url = self.url.replace('rtsp:', 'http:')
+        url_base = os.path.dirname(url) + '/'
+
+        # Fetch EXTM3U
+        resp = utils.urlopen(url)
+        m3u8_path = os.path.join(save_dir, self.channel.channel_id)
+        with open(m3u8_path, 'wb') as fp:
+            fp.write(resp.read())
+
+        # Fetch playlist
+        with open(m3u8_path, 'r') as fp:
+            true_path = [content for content in fp.readlines() if not content.startswith('#')][0]
+        true_url = url_base + true_path
+        resp = utils.urlopen(true_url)
+        m3u_path = os.path.join(save_dir, self.channel.channel_id + '.m3u')
+        with open(m3u_path, 'wb') as fp:
+            fp.write(resp.read())
+
+        with open(m3u_path, 'r') as fp:
+            index = 1
+            for content in fp.readlines():
+                if content.startswith('#'):
+                    continue
+                media_url = url_base + content
+                resp = utils.urlopen(media_url)
+                media_path = os.path.join(save_dir, '{}.mp3'.format(index))
+                with open(media_path, 'wb') as fp:
+                    fp.write(resp.read())
+                index += 1
