@@ -1,5 +1,5 @@
 import re
-from . import INDEX_URL, URL_BASE, utils
+from . import INDEX_URL, URL_BASE, utils, ChannelNotFound
 
 
 class Channel(object):
@@ -32,7 +32,7 @@ class Channel(object):
                 if channel_.channel_id == key
         ]
         if len(channels) == 0:
-            raise ChannelNotFound()
+            raise ChannelNotFound(key)
         return channels[0]
 
     @classmethod

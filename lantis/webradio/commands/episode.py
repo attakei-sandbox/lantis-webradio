@@ -13,9 +13,9 @@ class EpisodeListCommand(AbstractCommand):
         channnel_key = self.args.channel
         try:
             channel = Channel.find(channnel_key)
-        except ChannelNotFound:
-            err.write('Channel "{}" is not found.\n'.format(channnel_key))
-            return
+        except ChannelNotFound as ex:
+            err.write(str(ex) + '\n')
+            return 1
         episodes = channel.fetch_episodes()
         for episode in episodes:
             out.write(str(episode) + '\n')

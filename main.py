@@ -15,8 +15,9 @@ def main(argv=None):
         argv = sys.argv[1:]
     args = parser.parse_args()
     command = args.Command(args)
-    command.run()
+    return command.run()
 
 
 if __name__ == '__main__':
-    main()
+    ret = main()
+    sys.exit(ret)

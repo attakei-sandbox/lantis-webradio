@@ -1,7 +1,7 @@
 import sys
+from .abstract import AbstractCommand
 from .. import ChannelNotFound
 from ..models import Channel
-from .abstract import AbstractCommand
 
 
 class DetailCommand(AbstractCommand):
@@ -13,8 +13,8 @@ class DetailCommand(AbstractCommand):
         channnel_key = self.args.channel
         try:
             channel = Channel.find(channnel_key)
-        except ChannelNotFound:
-            err.write('Channel "{}" is not found.\n'.format(channnel_key))
+        except ChannelNotFound as ex:
+            err.write(str(ex) + '\n')
             return
         self.out_detail_information(channel, out)
 
