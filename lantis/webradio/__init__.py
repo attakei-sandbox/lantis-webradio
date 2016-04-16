@@ -5,22 +5,6 @@ URL_BASE = 'http://lantis-net.com/'
 INDEX_URL = 'http://lantis-net.com/index.html'
 
 
-def fetch_channels():
-    """Fetch current chennels in lantis-net.com
-    """
-    from urllib.request import urlopen, Request
-    from bs4 import BeautifulSoup
-    req = Request(INDEX_URL)
-    req.add_header('User-agent', 'Macintosh')
-    resp = urlopen(req)
-    soup = BeautifulSoup(resp, 'lxml')
-    channels = soup.find_all('div', class_='titles')
-    for channel_ in channels:
-        channel = Channel.from_html(channel_)
-        print(channel.channel_id, ':')
-        print('\t', channel.title)
-
-
 class Channel(object):
     def __init__(self, site_url, title, latest_episode_url):
         self.title = title

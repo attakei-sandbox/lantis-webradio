@@ -2,7 +2,7 @@
 # -*- coding:utf8 -*-
 import sys
 import argparse
-from lantis.webradio import fetch_channels
+from lantis.webradio.commands import fetch_channels
 
 
 parser = argparse.ArgumentParser()
@@ -16,7 +16,7 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
     args = parser.parse_args()
-    args.func()
+    args.func.main()
 
 
 if __name__ == '__main__':
