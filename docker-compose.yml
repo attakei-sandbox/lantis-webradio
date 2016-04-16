@@ -1,2 +1,5 @@
 development:
   build: .
+  volumes:
+    - ./data:/var/lib/lantis/data
+    - ./tmp:/var/lib/lantis/tmp

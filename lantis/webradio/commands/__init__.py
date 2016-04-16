@@ -3,12 +3,14 @@ import sys
 from .list import ListCommand
 from .detail import DetailCommand
 from .episode import EpisodeListCommand
+from .download import DownloadCommand
 
 
 ALL_COMMANDS = {
     'list' : ListCommand,
     'detail': DetailCommand,
     'episode': EpisodeListCommand,
+    'download': DownloadCommand,
 }
 
 

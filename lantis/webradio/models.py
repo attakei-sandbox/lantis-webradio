@@ -55,7 +55,7 @@ class Channel(object):
         episodes = []
         for url in episode_hrefs:
             parsed = Episode.parse_url(url)
-            episodes.append(Episode(self, int(parsed['number']), url))
+            episodes.append(Episode(self, parsed['number'], url))
         return episodes
 
 
