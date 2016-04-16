@@ -1,8 +1,14 @@
 # -*- coding:utf8 -*-
+from urllib.request import urlopen, Request
+from bs4 import BeautifulSoup
 
 
 URL_BASE = 'http://lantis-net.com/'
 INDEX_URL = 'http://lantis-net.com/index.html'
+
+
+class ChannelNotFound(Exception):
+    pass
 
 
 class Channel(object):
@@ -24,3 +30,27 @@ class Channel(object):
         episode_url_ = dom.p.find_all('a')[1].get('href')
         obj = cls(lsite_url_, title_, episode_url_)
         return obj
+
+    @classmethod
+    def find(cls, key):
+        channels = [
+            channel_
+                for channel_ in fetch_current_channels()
+                if channel_.channel_id == key
+        ]
+        if len(channels) == 0:
+            raise ChannelNotFound()
+        return channels[0]
+
+
+def fetch_current_channels():
+    req = Request(INDEX_URL)
+    req.add_header('User-agent', 'Macintosh')
+    resp = urlopen(req)
+    soup = BeautifulSoup(resp, 'lxml')
+    channels_ = soup.find_all('div', class_='titles')
+    channels = []
+    for channel_ in channels_:
+        channel = Channel.from_html(channel_)
+        channels.append(channel)
+    return channels
