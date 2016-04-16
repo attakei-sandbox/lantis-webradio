@@ -2,11 +2,13 @@
 import sys
 from .list import ListCommand
 from .detail import DetailCommand
+from .episode import EpisodeListCommand
 
 
 ALL_COMMANDS = {
     'list' : ListCommand,
     'detail': DetailCommand,
+    'episode': EpisodeListCommand,
 }
 
 
