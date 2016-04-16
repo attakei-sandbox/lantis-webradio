@@ -1,7 +1,5 @@
 import re
-from urllib.request import urlopen, Request
-from bs4 import BeautifulSoup
-from . import INDEX_URL, URL_BASE
+from . import INDEX_URL, URL_BASE, utils
 
 
 class Channel(object):
@@ -39,10 +37,7 @@ class Channel(object):
 
     @classmethod
     def fetch_current(cls):
-        req = Request(INDEX_URL)
-        req.add_header('User-agent', 'Macintosh')
-        resp = urlopen(req)
-        soup = BeautifulSoup(resp, 'lxml')
+        soup = utils.soup_url(INDEX_URL)
         channels_ = soup.find_all('div', class_='titles')
         channels = []
         for channel_ in channels_:
@@ -51,10 +46,7 @@ class Channel(object):
         return channels
 
     def fetch_episodes(self):
-        req = Request(self.site_url)
-        req.add_header('User-agent', 'Macintosh')
-        resp = urlopen(req)
-        soup = BeautifulSoup(resp, 'lxml')
+        soup = utils.soup_url(self.site_url)
         episode_hrefs = [
             dom.get('href')
                 for dom in soup.find_all('a')
