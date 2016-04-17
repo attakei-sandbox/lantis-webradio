@@ -1,7 +1,8 @@
 import sys
+import shutil
 from .abstract import AbstractCommand
 from ..models import Channel
-from .. import ChannelNotFound
+from .. import ChannelNotFound, settings
 
 
 class DownloadCommand(AbstractCommand):
@@ -26,4 +27,6 @@ class DownloadCommand(AbstractCommand):
         except ChannelNotFound as ex:
             err.write(str(ex) + '\n')
             return 1
-        episode.download('/var/lib/lantis/tmp')
+        fullpath = episode.download('/var/lib/lantis/tmp')
+        if settings.SAVE_STORAGE == 'local':
+            shutil.copy(fullpath, settings.SAVE_STORAGE_PATH)

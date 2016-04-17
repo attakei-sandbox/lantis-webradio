@@ -1,6 +1,6 @@
 import os
 import re
-from . import INDEX_URL, URL_BASE, utils, ChannelNotFound
+from . import utils, ChannelNotFound, settings
 
 
 class Channel(object):
@@ -10,7 +10,7 @@ class Channel(object):
         self.title = title
         self.site_url = site_url
         self.last_episode_url = last_episode_url
-        self.channel_id = site_url.replace(URL_BASE, '')[:-1]
+        self.channel_id = site_url.replace(settings.URL_BASE, '')[:-1]
 
     def __repr__(self):
         return self.title
@@ -38,7 +38,7 @@ class Channel(object):
 
     @classmethod
     def fetch_current(cls):
-        soup = utils.soup_url(INDEX_URL)
+        soup = utils.soup_url(settings.INDEX_URL)
         channels_ = soup.find_all('div', class_='titles')
         channels = []
         for channel_ in channels_:
@@ -89,13 +89,15 @@ class Episode(object):
         media_playlist = Playlist(true_url)
         media_playlist.fetch()
 
-        target_media_path = os.path.join(save_dir, self.channel.channel_id + '.mp3')
         # Download and merge media
+        target_media_path = os.path.join(save_dir, '{}_{}.mp3'.format(self.channel.channel_id, self.number))
         with open(target_media_path, 'wb') as media_out:
             for content in media_playlist.media_list:
                 media_url = url_base + content
                 resp = utils.urlopen(media_url)
                 media_out.write(resp.read())
+
+        return target_media_path
 
 
 class Playlist(object):
