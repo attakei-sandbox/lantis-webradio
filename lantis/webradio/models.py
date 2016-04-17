@@ -81,32 +81,33 @@ class Episode(object):
         url_base = os.path.dirname(url) + '/'
 
         # Fetch EXTM3U
-        resp = utils.urlopen(url)
-        m3u8_path = os.path.join(save_dir, self.channel.channel_id)
-        with open(m3u8_path, 'wb') as fp:
-            fp.write(resp.read())
+        init_playlist = Playlist(url)
+        init_playlist.fetch()
 
         # Fetch playlist
-        with open(m3u8_path, 'r') as fp:
-            true_path = [content for content in fp.readlines() if not content.startswith('#')][0]
-        true_url = url_base + true_path
-        resp = utils.urlopen(true_url)
-        m3u_path = os.path.join(save_dir, self.channel.channel_id + '.m3u')
-        with open(m3u_path, 'wb') as fp:
-            fp.write(resp.read())
+        true_url = url_base + init_playlist.media_list[0]
+        media_playlist = Playlist(true_url)
+        media_playlist.fetch()
 
-        # Download partss
-        media_urls = []
-        with open(m3u_path, 'r') as fp:
-            for content in fp.readlines():
-                if content.startswith('#'):
-                    continue
-                media_url = url_base + content
-                media_urls.append(media_url)
-
-        # Merge media
         target_media_path = os.path.join(save_dir, self.channel.channel_id + '.mp3')
+        # Download and merge media
         with open(target_media_path, 'wb') as media_out:
-            for media_url in media_urls:
+            for content in media_playlist.media_list:
+                media_url = url_base + content
                 resp = utils.urlopen(media_url)
                 media_out.write(resp.read())
+
+
+class Playlist(object):
+    def __init__(self, url=None):
+        self.url = url
+        self.media_list = []
+
+    def fetch(self):
+        resp = utils.urlopen(self.url)
+        body = resp.read().decode('utf-8')
+        self.media_list = [
+            content
+            for content in body.split('\n')
+                if not content.startswith('#') and content != ''
+        ]
