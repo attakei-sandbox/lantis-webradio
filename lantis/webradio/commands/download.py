@@ -1,5 +1,6 @@
 import sys
 import shutil
+from mutagen import id3
 from .abstract import AbstractCommand
 from .. import ChannelNotFound, settings
 from ..models import Channel
@@ -28,5 +29,14 @@ class DownloadCommand(AbstractCommand):
             err.write(str(ex) + '\n')
             return 1
         fullpath = episode.download('/var/lib/lantis/tmp')
+
+        # Edit tag
+        audio_tags = id3.ID3(fullpath)
+        audio_tags.add(id3.TIT2(encoding=3, text='{} 第{}回'.format(channel.title, episode.number)))
+        audio_tags.add(id3.TALB(encoding=3, text=channel.title))
+        audio_tags.add(id3.TRK(encoding=3, text=episode.number))
+        audio_tags.save()
+
+        # Save
         if settings.SAVE_STORAGE == 'local':
             shutil.copy(fullpath, settings.SAVE_STORAGE_PATH)
