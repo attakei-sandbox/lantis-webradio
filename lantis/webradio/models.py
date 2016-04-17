@@ -96,24 +96,17 @@ class Episode(object):
             fp.write(resp.read())
 
         # Download partss
-        media_paths = []
+        media_urls = []
         with open(m3u_path, 'r') as fp:
-            index = 1
             for content in fp.readlines():
                 if content.startswith('#'):
                     continue
                 media_url = url_base + content
-                media_path = os.path.join(save_dir, '{}.mp3'.format(index))
-                resp = utils.urlopen(media_url)
-                with open(media_path, 'wb') as fp:
-                    fp.write(resp.read())
-                media_paths.append(media_path)
-                index += 1
+                media_urls.append(media_url)
 
         # Merge media
         target_media_path = os.path.join(save_dir, self.channel.channel_id + '.mp3')
-        import subprocess
-        subprocess.run(['touch', target_media_path])
-        with open(target_media_path, 'w') as media_out:
-            for media_path in media_paths:
-                subprocess.run(['cat', media_path], stdout=media_out)
+        with open(target_media_path, 'wb') as media_out:
+            for media_url in media_urls:
+                resp = utils.urlopen(media_url)
+                media_out.write(resp.read())
