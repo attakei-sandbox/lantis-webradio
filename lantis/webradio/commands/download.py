@@ -1,8 +1,8 @@
 import sys
 import shutil
 from .abstract import AbstractCommand
-from ..models import Channel
 from .. import ChannelNotFound, settings
+from ..models import Channel
 
 
 class DownloadCommand(AbstractCommand):

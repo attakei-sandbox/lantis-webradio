@@ -1,7 +1,7 @@
 import sys
 from .abstract import AbstractCommand
-from ..models import Channel
 from .. import ChannelNotFound
+from ..models import Channel
 
 
 class EpisodeListCommand(AbstractCommand):
